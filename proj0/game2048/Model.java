@@ -5,7 +5,7 @@ import java.util.Observable;
 
 
 /** The state of a game of 2048.
- *  @author TODO: YOUR NAME HERE
+ *  @author Efe Murat Uçarlı
  */
 public class Model extends Observable {
     /** Current contents of the board. */
@@ -113,12 +113,54 @@ public class Model extends Observable {
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
+        int total_size = board.size();
+        for(int c = total_size - 1; c > 0; c--){
+            for(int r = 0; r < total_size; r++){
+                if((board.tile(c,r) != null)) {
+                    processColumn(c,total_size - 1,total_size);
+                    changed = true;
+                    break;
+                }
+                }
+            }
 
         checkGameOver();
         if (changed) {
             setChanged();
         }
         return changed;
+    }
+
+    public void processColumn(int columnIndex,int currentRowIndex,int numberOfRows) {
+        Tile t;
+        boolean notUpdated = true;
+        for (int r = currentRowIndex; r >= 0; r--) {
+            if ((r == numberOfRows - 1) || board.tile(columnIndex, r) == null) {
+            }
+
+            else {
+                t = board.tile(columnIndex, r);
+                if ((board.tile(columnIndex, numberOfRows - 1) != null) &&
+                        (t.value() == board.tile(columnIndex, numberOfRows - 1).value()) &&
+                        notUpdated) {
+                    this.score = this.score + (2 * t.value());
+                    board.move(columnIndex, numberOfRows - 1, t);
+                    notUpdated = false;
+                }
+
+                else if ((board.tile(columnIndex, numberOfRows - 1) != null) &&
+                        (t.value() != board.tile(columnIndex, numberOfRows - 1).value())){
+                    processColumn(columnIndex,numberOfRows - 2,numberOfRows - 1);
+                }
+
+                else if(!notUpdated){
+                    processColumn(columnIndex,numberOfRows - 2,numberOfRows - 1);
+                }
+                else{
+                    board.move(columnIndex, numberOfRows - 1, t);
+                }
+            }
+        }
     }
 
     /** Checks if the game is over and sets the gameOver variable
@@ -137,7 +179,14 @@ public class Model extends Observable {
      *  Empty spaces are stored as null.
      * */
     public static boolean emptySpaceExists(Board b) {
-        // TODO: Fill in this function.
+        int total_size = b.size();
+        for(int i = 0; i < total_size; i++){
+            for(int j = 0; j < total_size; j++){
+                if((b.tile(j,i) == null)){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -147,7 +196,14 @@ public class Model extends Observable {
      * given a Tile object t, we get its value with t.value().
      */
     public static boolean maxTileExists(Board b) {
-        // TODO: Fill in this function.
+        int total_size = b.size();
+        for(int i = 0; i < total_size; i++){
+            for(int j = 0; j < total_size; j++){
+                if((b.tile(j,i) != null) && b.tile(j,i).value() == MAX_PIECE){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -158,7 +214,47 @@ public class Model extends Observable {
      * 2. There are two adjacent tiles with the same value.
      */
     public static boolean atLeastOneMoveExists(Board b) {
-        // TODO: Fill in this function.
+        if(emptySpaceExists(b)){
+            return true;
+        }
+
+        else{
+            int total_size = b.size();
+            for(int i = 0; i < total_size; i++){
+                for(int j = 0; j < total_size; j++){
+                    int current_value = b.tile(j,i).value();
+                    int number_of_adjacent_tiles = 0;
+                    int left_value;
+                    int right_value;
+                    int up_value;
+                    int down_value;
+                    if(i != 0){
+                        up_value = b.tile(j,i-1).value();
+                        if(up_value == current_value){
+                            return true;
+                        }
+                    }
+                    if(j != 0){
+                        left_value = b.tile(j-1,i).value();
+                        if(left_value == current_value){
+                            return true;
+                        }
+                    }
+                    if(i != total_size - 1){
+                        down_value = b.tile(j,i+1).value();
+                        if(down_value == current_value){
+                            return true;
+                        }
+                    }
+                    if(j != total_size - 1) {
+                        right_value = b.tile(j + 1, i).value();
+                        if(right_value == current_value){
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
         return false;
     }
 
