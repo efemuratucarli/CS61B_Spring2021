@@ -13,6 +13,7 @@
 *.ctxt
 .mtj.tmp/
 *.jar
+!proj0/javalib/*.jar
 *.war
 *.ear
 *.zip
