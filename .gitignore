@@ -13,7 +13,6 @@
 *.ctxt
 .mtj.tmp/
 *.jar
-!proj0/javalib/*.jar
 *.war
 *.ear
 *.zip
@@ -391,3 +390,6 @@ tramp
 !byow/**/*.mp4
 !byow/**/*.gif
 !byow/**/*.wav
+
+#proj0 javac libraries
+!proj0/javalib/*.jar
