@@ -393,3 +393,6 @@ tramp
 
 #proj0 javac libraries
 !proj0/javalib/*.jar
+
+#README file
+!README.md
